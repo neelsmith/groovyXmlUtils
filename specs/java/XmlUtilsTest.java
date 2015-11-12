@@ -4,4 +4,10 @@ import org.junit.runner.RunWith;
 
 @RunWith(ConcordionRunner.class)
 public class XmlUtilsTest {
+
+
+  public String yo() {
+    return ("Yo.");
+  }
+
 }

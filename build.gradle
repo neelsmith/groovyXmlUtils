@@ -54,10 +54,6 @@ repositories {
 dependencies {
     compile group: 'org.codehaus.groovy', name: 'groovy-all', version: versionMap['groovy']
 
-    compile group : 'edu.unc.epidoc', name: 'transcoder', version: versionMap['epidoc']
-    compile group: 'edu.harvard.chs', name : 'cite' , version: versionMap['cite']
-
-    testCompile group : 'edu.unc.epidoc', name: 'transcoder', version: versionMap['epidoc']
     testCompile group: 'junit', name: 'junit', version: versionMap['junit']
     testCompile group: 'org.concordion', name : 'concordion', version: versionMap['concordion']
 }
@@ -78,7 +74,6 @@ task addVersion(){
 }
 addVersion.doLast {
     tokenMap["version"] = version
-    tokenMap["specversion"] = specversion
 }
 
 task conc(type: Copy, dependsOn: [test, addVersion]) {

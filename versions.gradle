@@ -1,0 +1,16 @@
+ext {
+
+  versionMap = [
+
+    "groovy" : '[2.0,)',
+
+    "concordion" : "1.5.1",
+
+    "junit" : '4.12',
+    "xmlunit" : '1.3'
+
+
+
+  ]
+
+}

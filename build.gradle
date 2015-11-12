@@ -1,0 +1,125 @@
+apply plugin: "base"
+apply plugin:  "groovy"
+apply plugin:  "java"
+apply plugin:  "maven"
+
+
+
+
+
+apply from: "versions.gradle"
+apply from: "conf.gradle"
+apply plugin: "edu.holycross.shot.concmd"
+
+
+group = "edu.holycross.shot"
+version = "1.0.0"
+
+
+if (hasProperty('pub')) {
+  System.err.print "Using configuration data from ${pub}"
+  File confFile = new File(pub)
+  if (! confFile.exists()) {
+      throw new Exception("No publication configuration file ${pub} found.")
+  } else {
+      apply from: pub
+  }
+} else {
+  apply from: "${rootProject.rootDir}/pub.gradle"
+}
+
+import com.github.rjeschke.txtmark.*
+import org.apache.tools.ant.filters.*
+
+buildscript {
+  repositories {
+    mavenCentral()
+    maven {
+  	  url "http://beta.hpcc.uh.edu/nexus/content/groups/public"
+  	}
+  }
+  dependencies {
+    classpath group: "edu.holycross.shot", name: "concmd", version: "1.0.3", classifier: "all"
+  }
+}
+
+
+
+repositories {
+     mavenCentral()
+     maven {
+       url "http://beta.hpcc.uh.edu/nexus/content/groups/public"
+     }
+}
+dependencies {
+    compile group: 'org.codehaus.groovy', name: 'groovy-all', version: versionMap['groovy']
+
+    compile group : 'edu.unc.epidoc', name: 'transcoder', version: versionMap['epidoc']
+    compile group: 'edu.harvard.chs', name : 'cite' , version: versionMap['cite']
+
+    testCompile group : 'edu.unc.epidoc', name: 'transcoder', version: versionMap['epidoc']
+    testCompile group: 'junit', name: 'junit', version: versionMap['junit']
+    testCompile group: 'org.concordion', name : 'concordion', version: versionMap['concordion']
+}
+
+task cpSpecs(type: Copy) {
+    description "Copies all source for concordion tests to build area."
+    from "specs"
+    into "${buildDir}/specs"
+}
+task prepareConc(type: edu.holycross.shot.ConcMdTask, dependsOn: cpSpecs) {
+      description "Converts source MD to HTML"
+      from "specs/md"
+      into "${buildDir}/specs/md"
+}
+
+task addVersion(){
+    description "Adds project version to list of filterable tokens"
+}
+addVersion.doLast {
+    tokenMap["version"] = version
+    tokenMap["specversion"] = specversion
+}
+
+task conc(type: Copy, dependsOn: [test, addVersion]) {
+    description "Filter-copies concordion output for final formatting"
+    from "${buildDir}/concordion-unfiltered"
+    into "${buildDir}/concordion-formatted"
+    filter(ReplaceTokens, tokens: tokenMap)
+}
+conc.doLast {
+    println "\nFormatted output is in ${buildDir}/concordion-formatted"
+}
+
+test.dependsOn prepareConc
+  test {
+    systemProperties 'concordion.output.dir': file("${buildDir}/concordion-unfiltered")
+  }
+
+sourceSets {
+      main {
+          java {
+              srcDir 'src'
+          }
+          resources {
+              srcDir 'src'
+          }
+      }
+      test {
+          java {
+              srcDir "specs/java"
+          }
+          resources {
+            srcDir "${buildDir}/specs/md"
+          }
+      }
+}
+
+uploadArchives {
+    description "Standard task to publish archives to nexus repository."
+    repositories.mavenDeployer {
+      repository(url: nexusRepo) {
+        authentication (userName: nexusUser, password: nexusPassword)
+      }
+    }
+}

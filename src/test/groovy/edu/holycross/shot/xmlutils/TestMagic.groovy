@@ -68,4 +68,49 @@ class TestMagic {
   }
 
 
+
+
+
+    @Test
+    void testMagicAttrOnElem() {
+      String xmlSrc = """
+      <l>Sing, <w ana="token">god<unclear>dess</unclear>
+      </w></l>
+      """
+      XmlNode n  = new XmlNode(xmlSrc)
+      def noMagic = n.collectText().split(/\s/)
+      assert noMagic.size() == 3
+      assert noMagic[1] == "god"
+
+      //define a magic node tokenizing on "w" element:
+      n.setMagic("","w","ana","")
+      assert n.magicMarkup == TokenizingMarkup.ATTRIBUTE_ON_ELEMENT
+      def collected = n.collectText()
+      def wMagic = collected.split(/\s/)
+      assert wMagic.size() == 2
+      assert wMagic[1] == "goddess"
+    }
+
+
+
+
+    @Test
+    void testMagicAttrValOnElem() {
+      String xmlSrc = """
+      <l>Sing, <w ana="token">god<unclear>dess</unclear>
+      </w></l>
+      """
+      XmlNode n  = new XmlNode(xmlSrc)
+      def noMagic = n.collectText().split(/\s/)
+      assert noMagic.size() == 3
+      assert noMagic[1] == "god"
+
+      //define a magic node tokenizing on "w" element:
+      n.setMagic("","w","ana","token")
+      assert n.magicMarkup == TokenizingMarkup.ATTRIBUTE_VALUE_ON_ELEMENT
+      def collected = n.collectText()
+      def wMagic = collected.split(/\s/)
+      assert wMagic.size() == 2
+      assert wMagic[1] == "goddess"
+    }
 }

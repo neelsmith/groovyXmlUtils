@@ -160,15 +160,19 @@ class XmlNode {
       case TokenizingMarkup.ATTRIBUTE_ONLY:
       magic = checkAttributeName(n)
       break
-
       case  TokenizingMarkup.ATTRIBUTE_VALUE_ONLY:
       magic = checkAttributeNameValue(n)
       break
       case  TokenizingMarkup.ATTRIBUTE_ON_ELEMENT:
+      if ((checkAttributeName(n)) && (checkElementName(n))) {
+        magic = true
+      }
       break
       case  TokenizingMarkup.ATTRIBUTE_VALUE_ON_ELEMENT:
+      if ((checkAttributeNameValue(n)) && (checkElementName(n))) {
+        magic = true
+      }
       break
-
 
       default:
       // leave magic false

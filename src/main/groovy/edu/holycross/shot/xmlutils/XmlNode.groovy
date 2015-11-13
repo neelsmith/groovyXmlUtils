@@ -108,9 +108,37 @@ class XmlNode {
     return nameIsMagic
   }
 
+
+  /** Determines whether the name of a given attribute matches
+  * the current setting for a magic tokenizing node.  The node
+  * name may either be a simple name, or a QName qualified by an
+  * XML namespace.
+  * @param n The node to check.
+  * @returns True if n matches the current setting for magic node.
+  */
   boolean checkAttributeName(Node n) {
-    System.err.println "CHECK ATTR ON " + n + " when magicAttr is " + magicAttrName
     if ((magicAttrName.size() > 0) && (n.attribute(magicAttrName))) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+
+  /** Determines whether the name/value combination of a given attribute matches
+  * the current setting for a magic tokenizing node.  The node
+  * name may either be a simple name, or a QName qualified by an
+  * XML namespace.
+  * @param n The node to check.
+  * @returns True if n matches the current setting for magic node.
+  */
+  boolean checkAttributeNameValue(Node n) {
+    if (
+        (magicAttrName.size() > 0) &&
+        (n.attribute(magicAttrName)) &&
+        (magicAttrValue.size() > 0) &&
+        (n.attribute(magicAttrName) == magicAttrValue)
+    ) {
       return true
     } else {
       return false
@@ -134,6 +162,7 @@ class XmlNode {
       break
 
       case  TokenizingMarkup.ATTRIBUTE_VALUE_ONLY:
+      magic = checkAttributeNameValue(n)
       break
       case  TokenizingMarkup.ATTRIBUTE_ON_ELEMENT:
       break

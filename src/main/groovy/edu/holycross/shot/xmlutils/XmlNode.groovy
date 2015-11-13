@@ -6,10 +6,6 @@ import groovy.xml.Namespace
  */
 class XmlNode {
 
-  /** Temporary variable to delete before release version. */
-  Integer debug = 0
-
-
   // Values defining a magic element wrapping word tokens potentially including
   //further markup that extraction needs to burrow through
   /** If non-null, magic element must be in this namespace */

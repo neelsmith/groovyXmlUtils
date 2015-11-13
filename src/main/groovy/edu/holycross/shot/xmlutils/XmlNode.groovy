@@ -10,10 +10,8 @@ class XmlNode {
   Integer debug = 0
 
 
-  /* Values defining a magic element wrapping word tokens potentially including
-  further markup that extraction needs to burrow through
-  */
-
+  // Values defining a magic element wrapping word tokens potentially including
+  //further markup that extraction needs to burrow through
   /** If non-null, magic element must be in this namespace */
   String magicNs = ""
   /** If non-null, local name of magic word wrapping element. */
@@ -22,15 +20,13 @@ class XmlNode {
   String magicAttrName = ""
   /** If non-null, required value for magic attribute named by magicAttrName. */
   String magicAttrValue = ""
-
+  /** Category of tokenizing markup to apply to this node. */
   TokenizingMarkup magicMarkup = null
 
   /** The root of the XML content as a parsed groovy.util.Node */
   def parsedNode = null
 
 
-  XmlNode () {
-  }
 
   /**
    * Constructs a XmlNode object from a groovy Node object.
@@ -39,8 +35,10 @@ class XmlNode {
     parsedNode = n
   }
 
-  /**
-   */
+  /** Constructs XmlNode object from a String of well-formed XML
+  *  by parsing the string and saving the resulting root node.
+  * @param content A String of well formed XML.
+  */
   XmlNode (String content) {
     try {
       parsedNode = new XmlParser().parseText(content)
@@ -86,6 +84,15 @@ class XmlNode {
     }
   }
 
+
+
+  /** Determines whether the name of a given node matches
+  * the current setting for a magic tokenizing node.  The node
+  * name may either be a simple name, or a QName qualified by an
+  * XML namespace.
+  * @param n The node to check.
+  * @returns True if n matches the current setting for magic node.
+  */
   boolean checkElementName(Node n) {
     boolean nameIsMagic = false
     def elementName = n.name()
@@ -102,8 +109,20 @@ class XmlNode {
   }
 
   boolean checkAttributeName(Node n) {
+    System.err.println "CHECK ATTR ON " + n + " when magicAttr is " + magicAttrName
+    if ((magicAttrName.size() > 0) && (n.attribute(magicAttrName))) {
+      return true
+    } else {
+      return false
+    }
   }
 
+
+  /** Determines whether a given node contains text contents to be extracted
+  * as a single token.
+  * @param n The node to check.
+  * @returns True if node is a magic node containing text to tokenize as a unit.
+  */
   boolean magicNode(Node n) {
     boolean magic = false
     switch (this.magicMarkup) {
@@ -113,20 +132,40 @@ class XmlNode {
       case TokenizingMarkup.ATTRIBUTE_ONLY:
       magic = checkAttributeName(n)
       break
+
+      case  TokenizingMarkup.ATTRIBUTE_VALUE_ONLY:
+      break
+      case  TokenizingMarkup.ATTRIBUTE_ON_ELEMENT:
+      break
+      case  TokenizingMarkup.ATTRIBUTE_VALUE_ON_ELEMENT:
+      break
+
+
       default:
-      // magic stays false
+      // leave magic false
       break
     }
     return magic
   }
 
-  /**
-   */
+  /** Recursively walks through all descendants of the XmlNode's
+  * root element, and collects the content of text nodes. In handling white space,
+  * XML elements are taken to mark new, white-space delimited tokens
+  * except where markup identified by the magicNode() method
+  * groups together a token with mixed content model.
+  * @return A String with the text content of the object node.
+  */
   String collectText() {
     return collectText(this.parsedNode,"", false)
   }
 
-  /**
+  /** Recursively walks through all descendants of an XML node
+   * and collects the content of text nodes. In handling white space,
+   * XML elements are taken to mark new, white-space delimited tokens
+   * except where markup identified by the magicNode() method
+   * groups together a token with mixed content model.
+   * @param n The parsed node from which text will be extracted.
+   * @return A String with the text content of the object node.
    */
   String collectText(groovy.util.Node n) {
     return collectText(n,"", false)

@@ -94,11 +94,14 @@ class XmlNode {
         nameIsMagic = true
       }
     } else {
-      println "Check for magic:"
-      println "\tlocal name is " + elementName.getLocalPart()
-      println "\tnamespace is " + elementName.getNamespaceURI()
+      if ((elementName.getNamespaceURI().toString() == magicNs) && (elementName.getLocalPart() == magicNode)) {
+        nameIsMagic = true
+      }
     }
     return nameIsMagic
+  }
+
+  boolean checkAttributeName(Node n) {
   }
 
   boolean magicNode(Node n) {
@@ -106,6 +109,9 @@ class XmlNode {
     switch (this.magicMarkup) {
       case TokenizingMarkup.ELEMENT_ONLY:
       magic = checkElementName(n)
+      break
+      case TokenizingMarkup.ATTRIBUTE_ONLY:
+      magic = checkAttributeName(n)
       break
       default:
       // magic stays false

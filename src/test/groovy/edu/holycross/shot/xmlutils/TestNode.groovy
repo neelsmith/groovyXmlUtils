@@ -3,7 +3,7 @@ package edu.holycross.shot.xmlutils
 import org.junit.Test
 import static groovy.test.GroovyAssert.shouldFail
 
-class TestXmlNode {
+class TestNode {
 
 
   @Test
@@ -12,15 +12,16 @@ class TestXmlNode {
     <div n="1">
 		<l n="1">Sing goddess, the rage of <persName n="urn:cite:hmt:pers.pers1">Achilles</persName>
 		</l>
+    <l n="2">destructive rage</l>
     </div>
     """
     XmlNode n  = new XmlNode(xmlSrc)
+    n.debug = 5
 
-    Integer expectedWords = 6
+    Integer expectedWords = 8
     String expectedFirst = "Sing"
     String nodeTxt = n.collectText()
-    // rm any leading space before splitting:
-    def asciiWordList =  nodeTxt.toString().replaceFirst(/^[ ]/,"").split(/\s/)
+    def asciiWordList =  nodeTxt.toString().split(/\s/)
     assert expectedWords == asciiWordList.size()
     assert asciiWordList[0] == expectedFirst
 

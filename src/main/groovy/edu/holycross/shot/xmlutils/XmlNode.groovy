@@ -1,27 +1,13 @@
 package edu.holycross.shot.xmlutils
 
-/*
-def rootElementName = docRoot.name()
-
-println "Document root's name is an object of " + rootElementName.getClass()
-println "Document root is named " + rootElementName + " with:"
-println "\tlocal name is " + rootElementName.getLocalPart()
-println "\tnamespace is " + rootElementName.getNamespaceURI()
-*/
-
-
-
-
 import groovy.xml.Namespace
-
 
 /**
  */
 class XmlNode {
 
   /** Temporary variable to delete before release version. */
-  boolean debug = 0
-
+  Integer debug = 0
 
 
   /* Values defining a magic element wrapping word tokens potentially including
@@ -37,6 +23,7 @@ class XmlNode {
   /** If non-null, required value for magic attribute named by magicAttrName. */
   String magicAttrValue = ""
 
+  TokenizingMarkup magicMarkup = null
 
   /** The root of the XML content as a parsed groovy.util.Node */
   def parsedNode = null
@@ -49,9 +36,6 @@ class XmlNode {
    * Constructs a XmlNode object from a groovy Node object.
    */
   XmlNode (groovy.util.Node n) {
-    if (debug) {
-      System.err.println "\nConstructing XmlNode from groovy node " + n + "\n"
-    }
     parsedNode = n
   }
 
@@ -70,7 +54,8 @@ class XmlNode {
 
 
   /** Single method to assign values to all settings defining
-  * behavior of magic node.
+  * behavior of magic node.  Based on supplied values, determines what
+  * category of TokenizingMarkup applies to this node.
   * @param ns XML namespace for magic node.
   * @param Local name of magic node.
   * @param Name of magic attribute.
@@ -81,8 +66,53 @@ class XmlNode {
      magicNode = nodeName
      magicAttrName = attrName
      magicAttrValue = attrValue
+
+     if ((nodeName.size() > 0)) {
+       // Node name therefore requird:
+      if ((attrName.size() > 0) && (attrValue.size() > 0)) {
+        magicMarkup = TokenizingMarkup.ATTRIBUTE_VALUE_ON_ELEMENT
+      } else  if ((nodeName.size() > 0) && (attrName.size() > 0)) {
+        magicMarkup = TokenizingMarkup.ATTRIBUTE_ON_ELEMENT
+      } else {
+        magicMarkup = TokenizingMarkup.ELEMENT_ONLY
+      }
+    } else {
+      // attribute on any node:
+      if ((attrName.size() > 0 ) && (attrValue.size() > 0)) {
+        magicMarkup = TokenizingMarkup.ATTRIBUTE_VALUE_ONLY
+      } else if ((attrName.size() > 0 )) {
+        magicMarkup = TokenizingMarkup.ATTRIBUTE_ONLY
+      }
+    }
   }
 
+  boolean checkElementName(Node n) {
+    boolean nameIsMagic = false
+    def elementName = n.name()
+    if (elementName instanceof java.lang.String) {
+      if (elementName == magicNode) {
+        nameIsMagic = true
+      }
+    } else {
+      println "Check for magic:"
+      println "\tlocal name is " + elementName.getLocalPart()
+      println "\tnamespace is " + elementName.getNamespaceURI()
+    }
+    return nameIsMagic
+  }
+
+  boolean magicNode(Node n) {
+    boolean magic = false
+    switch (this.magicMarkup) {
+      case TokenizingMarkup.ELEMENT_ONLY:
+      magic = checkElementName(n)
+      break
+      default:
+      // magic stays false
+      break
+    }
+    return magic
+  }
 
   /**
    */
@@ -109,21 +139,28 @@ class XmlNode {
    * @return A String with the text content of the object node.
    */
   String collectText(Object n, String allText, boolean inWord) {
-    if (n.getClass().getName() == "java.lang.String") {
-      allText +=  n
+    String collectedText = allText
+    boolean inMagic = inWord
+    if (n instanceof java.lang.String) {
+      String stripped = n.replaceFirst(/[\s\r\n]+$/, "")
+      collectedText +=  stripped
 
     } else {
-      /*if (magicNode(n)) {
-	inWord = true
-	} */
-      n.children().each { child ->
-	       allText = collectText(child, allText,inWord)
+      boolean isMagic = (magicNode(n))
+      if  (isMagic ){
+        inMagic = true
       }
-      /*  if (magicNode(n)) {
-	  inWord = false
-	  } */
-      return allText
+      n.children().each { child ->
+        if (!inMagic) {
+          collectedText += " "
+        }
+        collectedText = collectText(child, collectedText,inMagic)
+      }
+      if (isMagic) {
+        inMagic = false
+      }
     }
+    return collectedText.replaceFirst(/^[\s\n\r]/, "").replaceAll(/[\s\n\r]+/," ")
   }
 
 

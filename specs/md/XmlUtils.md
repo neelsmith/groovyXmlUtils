@@ -30,11 +30,29 @@ while using white space differently, produces the identical string <strong conco
 
 @closeex@
 
-### Magic markup ###
+### Markup for explicit tokenization ###
+
+The `XmlNode` class supports optionally defining markup conventions that cluster contained content into a single token, thereby overriding the default behavior of separating elements by a white space.  Any of the following conventions may be used to define tokenizing markup:
+
+1. A specified element, either namespace-qualified or not.
+2. A specified attribute.
+3. A specified value on a specified attribute.
+4. A specified attribute on a specified element, either namespace-qualified or not.
+5.  A specified value on a specified attribute on a specified element, either namespace-qualified or not.
 
 
 
+@openex@
 
+### Examples ###
+
+
+
+Consider for example a document with white-space separated tokens.  If an inte
+
+
+
+@closeex@
 
 ## Planned for next release: serialize a node
 

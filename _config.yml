@@ -1,0 +1,28 @@
+# Dependencies
+markdown:         redcarpet
+pygments:         true
+
+# Permalinks
+permalink:        pretty
+
+# Setup
+title:            Utilities for working with XML parse trees in groovy
+tagline:
+description:      ''
+baseurl: '/groovyXmlUtils/'
+
+
+author:
+  name:           'Neel Smith'
+
+
+paginate:         5
+
+
+links:
+  - title: Github project
+    url: https://github.com/neelsmith/groovyXmlUtils
+    external: true
+  - title: Neel Smith elsewhere on github
+    url: http://neelsmith.github.io
+    external: true

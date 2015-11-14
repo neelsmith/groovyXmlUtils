@@ -23,6 +23,9 @@ class XmlNode {
   def parsedNode = null
 
 
+  TokenizingMarkup getMagicMarkup() {
+    return magicMarkup
+  }
 
   /**
    * Constructs a XmlNode object from a groovy Node object.
@@ -60,7 +63,7 @@ class XmlNode {
      magicNode = nodeName
      magicAttrName = attrName
      magicAttrValue = attrValue
-
+System.err.println "Assinged magic strings. Att val is #" + magicAttrValue + "#"
      if ((nodeName.size() > 0)) {
        // Node name therefore requird:
       if ((attrName.size() > 0) && (attrValue.size() > 0)) {
@@ -71,9 +74,12 @@ class XmlNode {
         magicMarkup = TokenizingMarkup.ELEMENT_ONLY
       }
     } else {
+      System.err.println "No node value: att or att value only"
+      System.err.println "Look at ${attrName} and ${attrValue}"
       // attribute on any node:
       if ((attrName.size() > 0 ) && (attrValue.size() > 0)) {
         magicMarkup = TokenizingMarkup.ATTRIBUTE_VALUE_ONLY
+        System.err.println "It's att val only"
       } else if ((attrName.size() > 0 )) {
         magicMarkup = TokenizingMarkup.ATTRIBUTE_ONLY
       }
@@ -129,12 +135,15 @@ class XmlNode {
   * @returns True if n matches the current setting for magic node.
   */
   boolean checkAttributeNameValue(Node n) {
+    System.err.println "CHECK ATT NAME/VAL COMBO on ${n.name()}"
+    System.err.println "Compare #" + n.attribute(magicAttrName) + "# with #" + magicAttrValue + "#"
     if (
         (magicAttrName.size() > 0) &&
         (n.attribute(magicAttrName)) &&
         (magicAttrValue.size() > 0) &&
         (n.attribute(magicAttrName) == magicAttrValue)
     ) {
+      System.err.println "IT'S MAGIC"
       return true
     } else {
       return false

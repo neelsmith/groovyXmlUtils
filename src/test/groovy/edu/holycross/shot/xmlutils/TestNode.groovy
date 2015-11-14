@@ -16,8 +16,6 @@ class TestNode {
     </div>
     """
     XmlNode n  = new XmlNode(xmlSrc)
-    n.debug = 5
-
     Integer expectedWords = 8
     String expectedFirst = "Sing"
     String nodeTxt = n.collectText()

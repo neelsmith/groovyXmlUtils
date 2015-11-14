@@ -112,5 +112,17 @@ class TestMagic {
       def wMagic = collected.split(/\s/)
       assert wMagic.size() == 2
       assert wMagic[1] == "goddess"
+
+
+      String distinctAttVals = """<l><w ana="multitoken">Sing<punct>,</punct></w> <w ana="token">god<unclear>dess</unclear></w></l>"""
+
+      XmlNode distinctAttNode = new XmlNode(distinctAttVals)
+      distinctAttNode.setMagic("","","ana","token")
+      assert distinctAttNode.magicMarkup == TokenizingMarkup.ATTRIBUTE_VALUE_ONLY
+
+      def distinctCollected = distinctAttNode.collectText()
+      def byAttVal = distinctCollected.split(/\s/)
+      assert byAttVal.size() == 3
+      assert byAttVal[1] == ","
     }
 }

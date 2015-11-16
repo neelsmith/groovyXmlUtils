@@ -270,9 +270,9 @@ System.err.println "Assinged magic strings. Att val is #" + magicAttrValue + "#"
 
 
   /* ************************************************************/
-  // PRIVATE METHODS FOR FORMING XML STRINGS /////////////////////
+  // METHODS FOR FORMING XML STRINGS /////////////////////
 
-  private String closeElement(Object n) {
+  String closeElement(Object n) {
     if (n.name() instanceof groovy.xml.QName)  {
       if (n.name().getPrefix().size() > 0) {
 	return "</${n.name().getPrefix()}:${n.name().getLocalPart()}>"
@@ -284,7 +284,7 @@ System.err.println "Assinged magic strings. Att val is #" + magicAttrValue + "#"
     }
   }
 
-  private String openElement(Object n, boolean withDefaultNs) {
+  String openElement(Object n, boolean withDefaultNs) {
     StringBuffer tag = new StringBuffer()
     if (n.name() instanceof groovy.xml.QName) {
       if (n.name().getPrefix().size() > 0) {
@@ -313,7 +313,7 @@ System.err.println "Assinged magic strings. Att val is #" + magicAttrValue + "#"
   }
 
 
-  private String serializeNode(Object n, String allText, boolean inWord) {
+  String serializeNode(Object n, String allText, boolean inWord) {
     return serializeNode(n, allText, inWord, false)
   }
 
@@ -326,7 +326,7 @@ System.err.println "Assinged magic strings. Att val is #" + magicAttrValue + "#"
    * to which the content of any further text nodes will be added.
    * @return A String of well-formed XML.
    */
-  private String serializeNode(Object n, String allText, boolean inWord, boolean includeRootNsDecl) {
+  String serializeNode(Object n, String allText, boolean inWord, boolean includeRootNsDecl) {
     if (n instanceof java.lang.String) {
       allText = allText + n
     } else {
@@ -347,7 +347,7 @@ System.err.println "Assinged magic strings. Att val is #" + magicAttrValue + "#"
    * @param n The Node to examine.
    * @return A String with space-separated key="value" pairs.
    */
-  private String collectAttrs(groovy.util.Node n) {
+  String collectAttrs(groovy.util.Node n) {
     StringBuffer attrStr = new StringBuffer()
     n.attributes().keySet().each { a ->
       if (a instanceof groovy.xml.QName) {

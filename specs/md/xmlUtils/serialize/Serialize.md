@@ -47,7 +47,7 @@ If we serialize the child `l` element separately, the well-formed fragment maint
 @closeex@
 
 
-## Serializing and collecting text ##
+## Interaction of serializing and collecting text ##
 
 Because the serialization of a parsed node is XML-equivalent to the source for the parsed node, the output of the `collectText` method on any `XmlNode` created from the serialization is guaranteed to be identical to the output of `collectText` on the original parsed node, so long as any configuration of tokenizing markup is applied to both original and derivative node.  (Refer to the [specification for collecting text in a parsed tree for details about tokenizing markup](../collectText/CollectText.html).)
 

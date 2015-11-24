@@ -63,7 +63,6 @@ class XmlNode {
      magicNode = nodeName
      magicAttrName = attrName
      magicAttrValue = attrValue
-System.err.println "Assinged magic strings. Att val is #" + magicAttrValue + "#"
      if ((nodeName.size() > 0)) {
        // Node name therefore requird:
       if ((attrName.size() > 0) && (attrValue.size() > 0)) {
@@ -74,8 +73,6 @@ System.err.println "Assinged magic strings. Att val is #" + magicAttrValue + "#"
         magicMarkup = TokenizingMarkup.ELEMENT_ONLY
       }
     } else {
-      System.err.println "No node value: att or att value only"
-      System.err.println "Look at ${attrName} and ${attrValue}"
       // attribute on any node:
       if ((attrName.size() > 0 ) && (attrValue.size() > 0)) {
         magicMarkup = TokenizingMarkup.ATTRIBUTE_VALUE_ONLY
@@ -225,7 +222,13 @@ System.err.println "Assinged magic strings. Att val is #" + magicAttrValue + "#"
     String collectedText = allText
     boolean inMagic = inWord
     if (n instanceof java.lang.String) {
-      String stripped = n.replaceFirst(/[\s\r\n]+$/, "")
+
+      String stripped
+      if (inMagic) {
+	stripped = n.replaceAll(/[\s\r\n]+/, "")
+      } else {
+	stripped = n.replaceFirst(/[\s\r\n]+$/, "")
+      }
       collectedText +=  stripped
 
     } else {
@@ -309,7 +312,7 @@ System.err.println "Assinged magic strings. Att val is #" + magicAttrValue + "#"
     }
     tag.append( collectAttrs(n))
     tag.append(">")
-    return tag.toString()
+    return tag.toString().replaceAll(" >", ">")
   }
 
 
@@ -328,16 +331,16 @@ System.err.println "Assinged magic strings. Att val is #" + magicAttrValue + "#"
    */
   String serializeNode(Object n, String allText, boolean inWord, boolean includeRootNsDecl) {
     if (n instanceof java.lang.String) {
-      allText = allText + n
+      allText = allText + n.replaceAll(/[\s]+/," ")
+      
     } else {
       allText += openElement(n, includeRootNsDecl)
       n.children().each { child ->
 	allText += " "
+	allText = serializeNode(child, allText,inWord)
       }
-      allText = serializeNode(child, allText,inWord)
+      allText+=  closeElement(n)
     }
-
-    allText+=  closeElement(n)
     return allText
   }
 

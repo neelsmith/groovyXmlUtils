@@ -26,7 +26,6 @@ class TestToXml {
     XmlNode n = new XmlNode(xmlSrc)
     String serialized = n.toXml()
     XmlNode deriv = new XmlNode(serialized)
-    System.err.println "DERIV XML " + deriv.toXml()
     deriv.setMagic("","w","","")
     assert deriv.collectText() == "Sing, goddess"
   }

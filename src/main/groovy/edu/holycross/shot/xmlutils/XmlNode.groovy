@@ -76,7 +76,6 @@ class XmlNode {
       // attribute on any node:
       if ((attrName.size() > 0 ) && (attrValue.size() > 0)) {
         magicMarkup = TokenizingMarkup.ATTRIBUTE_VALUE_ONLY
-        System.err.println "It's att val only"
       } else if ((attrName.size() > 0 )) {
         magicMarkup = TokenizingMarkup.ATTRIBUTE_ONLY
       }
@@ -132,15 +131,12 @@ class XmlNode {
   * @returns True if n matches the current setting for magic node.
   */
   boolean checkAttributeNameValue(Node n) {
-    System.err.println "CHECK ATT NAME/VAL COMBO on ${n.name()}"
-    System.err.println "Compare #" + n.attribute(magicAttrName) + "# with #" + magicAttrValue + "#"
     if (
         (magicAttrName.size() > 0) &&
         (n.attribute(magicAttrName)) &&
         (magicAttrValue.size() > 0) &&
         (n.attribute(magicAttrName) == magicAttrValue)
     ) {
-      System.err.println "IT'S MAGIC"
       return true
     } else {
       return false

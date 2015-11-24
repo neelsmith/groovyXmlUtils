@@ -50,7 +50,7 @@ This example illustrates how the `collectText()` method separates strings extrac
 
 ### Markup for explicit tokenization ###
 
-Sometimes we want to override the default behavior of separating text content of adjacent elements.  The `XmlNode` class supports optionally defining markup conventions that cluster contained content into a single token.  Any of the following conventions may be used to define tokenizing markup:
+Sometimes we want to override the default behavior of separating text content of adjacent elements.  The `XmlNode` class supports optionally defining markup conventions that cluster contained content into a single token with all white space removed.  Any of the following conventions may be used to define tokenizing markup:
 
 1. A specified element, either namespace-qualified or not.
 2. A specified attribute.
@@ -139,8 +139,3 @@ Now we add the restriction that the `token` value on `ana` only identifies token
 
 
 @closeex@
-
-
-## Planned for next release: serialize a node
-
-The task of re-serializing a node and its contents to XML is tedious.  One compilication is that in some contexts, it may be desirable to include explicit XML namespace definitions if serializing a subtree when the XML namespace is defined in a containing element.

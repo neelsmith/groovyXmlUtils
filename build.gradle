@@ -13,7 +13,7 @@ apply plugin: "edu.holycross.shot.concmd"
 
 
 group = "edu.holycross.shot"
-version = "1.1.1"
+version = "1.2.0"
 
 
 if (hasProperty('pub')) {

@@ -16,7 +16,7 @@ class XmlNode {
   String magicAttrName = ""
   /** If non-null, required value for magic attribute named by magicAttrName. */
   String magicAttrValue = ""
-  /** Category of tokenizing markup to apply to this node. */
+  /** Category of tokenizing markup, if any, to apply to this node. */
   TokenizingMarkup magicMarkup = null
 
   /** The root of the XML content as a parsed groovy.util.Node */
@@ -47,6 +47,10 @@ class XmlNode {
     if (!parsedNode) {
       throw new Exception("XmlNode: could not parse content ${content}")
     }
+  }
+
+  groovy.util.Node getParsedNode() {
+    return this.parsedNode
   }
 
 
@@ -328,7 +332,7 @@ class XmlNode {
   String serializeNode(Object n, String allText, boolean inWord, boolean includeRootNsDecl) {
     if (n instanceof java.lang.String) {
       allText = allText + n.replaceAll(/[\s]+/," ")
-      
+
     } else {
       allText += openElement(n, includeRootNsDecl)
       n.children().each { child ->

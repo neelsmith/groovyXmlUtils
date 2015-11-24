@@ -7,7 +7,7 @@ Attempting to serialize a node with an explicit namespace when the source XML ha
 
 @openex@
 
-### Example: serailizing a node with no name space ###
+### Example: serializing a node with no name space ###
 
 This XML snippet has no namespace declaration:
 
@@ -19,6 +19,28 @@ we get
 
 <strong concordion:assertEquals="serialize(#il1)">&lt;l n="1"> Sing, goddess, the rage of &lt;persName n="urn:cite:hmt:pers.pers1"> Achilles&lt;/persName>&lt;/l></strong>
 
+
+
+
+@closeex@
+
+
+@openex@
+
+### Example: adding the default name space to the serialization ###
+
+
+This fragment of well-formed XML declares as its default namespace the namespace of the Text Encoding Initiative:
+
+<code concordion:set="#il1ns">&lt;div xmlns="http://www.tei-c.org/ns/1.0">&lt;l n="1">Sing, goddess>&lt;/l>&lt;/div></code>
+
+If we serialize the root element with its default namespace, we unsurprisingly get the XML-equivalent String:
+
+<strong concordion:assertEquals="serializeWithNS(#il1ns)">&lt;div xmlns="http://www.tei-c.org/ns/1.0"> &lt;l n="1"> Sing, goddess>&lt;/l>&lt;/div></strong>
+
+If we serialize the child `l` element separately, the well-formed fragment maintains the default namespace:
+
+<strong concordion:assertEquals="serializeChildWithNS(#il1ns)">&lt;l  xmlns="http://www.tei-c.org/ns/1.0" n="1"> Sing, goddess>&lt;/l></strong>
 
 
 

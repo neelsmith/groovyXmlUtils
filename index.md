@@ -6,7 +6,7 @@ title: "Groovy XML utilities"
 
 Utilities automating common recursive tasks when working with a parsed XML tree.
 
-Version: **1.0.0**
+Version: **1.2.0**
 
 
 ## Documentation

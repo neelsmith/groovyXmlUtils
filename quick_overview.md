@@ -3,10 +3,14 @@ layout: page
 title: "Quick overview"
 ---
 
+## Construct an XmlNode
 
 Construct an XmlNode from a parsed groovy node, or from raw XML text:
 
     XmlNode n = new XmlNode("<div><l>I met a traveller from an antique land</l><l>Who said...</l></div>")
+
+
+## Collect text content of a node
 
 Get the text content of a specified node, or default to the root node,
 
@@ -18,7 +22,8 @@ and the resulting value of `txt` is
 
 Optionally, define tokenizing markup that overrides default white space normalization.  E.g., for the XML
 
-    <w>Part<unclear>iall</unclear>y</w>
+    <w>Part<unclear
+    >iall</unclear>y</w>
 
 you might not want the default result
 
@@ -44,3 +49,27 @@ Here is an example that tokenizes only on `seg` elements in the TEI namespace wh
 In this case, `collectText()` produces
 
     Partially distinct
+
+
+## Serialize to XML
+
+You can serialize a parsed XML node to an XML String with the `toXml` method. Pass a boolean flag to include or omit a declaration for the default namespace (`true` means "include the declaration").  By default, no declaration is included:
+
+
+    XmlNode n = new XmlNode("<div xmlns='http://www.tei-c.org/ns/1.'><l n='1'>Sing, goddess></l></div>")
+    String noNamespace = n.toXml()
+    String withNamespace = n.toXml(true)
+
+The value of `noNamespace` is
+
+    <div> <l n="1"> Sing, goddess></l></div>
+
+The value of `withNamespace` is
+
+    <div xmlns="http://www.tei-c.org/ns/1."> <l n="1"> Sing, goddess></l></div>
+
+Since the specification for the `collectText` method guarantees identical results for XML-equivalent sources, this tautology is always true for an `XmlNode` object `n`:
+
+    String xmlString = n.toXml()
+    XmlNode derivative = new XmlNode(xmlString)
+    assert n.collectText() == derivative.collectText()

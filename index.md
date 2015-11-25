@@ -19,4 +19,4 @@ Version: **1.2.0**
 
 ## Get the package
 
-Get the binary from the repository at <http://beta.hpcc.uh.edu/nexus/content/groups/public>, with maven identifiers: group `edu.holycross.shot`, package `groovyXmlUtils`, or build from source: <https://github.com/neelsmith/groovyXmlUtils>.
+Get the binary from the repository at <http://beta.hpcc.uh.edu/nexus/content/groups/public>, with maven identifiers: group `edu.holycross.shot`, package `xmlutils`, or build from source: <https://github.com/neelsmith/groovyXmlUtils>.
